@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jetson Orin Nano: Complete Flashing and Setup Guide | Vihaan Gupta</title>
+<meta name="description" content="A beginner-friendly written guide to flashing the NVIDIA Jetson Orin Nano to an NVMe SSD with SDK Manager and JetPack 6.x, with video walkthroughs.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fff;--soft:#f6f8fa;--text:#1f2933;--muted:#5b6770;--line:#e1e5ea;--accent:#1d4ed8;--code:#0f172a;--codetext:#e2e8f0}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:70px}
+body{margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--text);background:var(--bg);line-height:1.7;font-size:17px}
+header{position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid var(--line)}
+.bar{max-width:900px;margin:auto;padding:12px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.bar a{color:var(--text);text-decoration:none;font-weight:600;font-size:15px}
+.bar a:hover{color:var(--accent)}
+main{max-width:900px;margin:auto;padding:32px 20px 60px}
+h1{font-size:2.1rem;line-height:1.25;margin:.2em 0}
+h2{font-size:1.5rem;margin:2.2em 0 .6em;padding-bottom:.3em;border-bottom:1px solid var(--line)}
+h3{font-size:1.15rem;margin:1.6em 0 .4em}
+p.lead{color:var(--muted);font-size:1.1rem}
+.meta{color:var(--muted);font-size:14px}
+a{color:var(--accent)}
+code{font-family:"JetBrains Mono",Consolas,monospace;font-size:.88em;background:var(--soft);border:1px solid var(--line);padding:1px 5px;border-radius:4px}
+.cb{position:relative;margin:14px 0}
+pre{margin:0;background:var(--code);color:var(--codetext);padding:16px 18px;border-radius:8px;overflow-x:auto;font-family:"JetBrains Mono",Consolas,monospace;font-size:14px;line-height:1.55}
+pre.diagram{background:var(--soft);color:var(--text);border:1px solid var(--line);margin:16px 0;font-size:13px}
+.cb button{position:absolute;top:8px;right:8px;background:#334155;color:#e2e8f0;border:0;border-radius:5px;padding:4px 10px;font-size:12px;cursor:pointer}
+.cb button:hover{background:#475569}
+.video{margin:22px 0}
+.video .frame{position:relative;padding-top:56.25%;border-radius:8px;overflow:hidden;background:#000;border:1px solid var(--line)}
+.video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.video figcaption{font-size:14px;color:var(--muted);margin-top:6px}
+.note,.warn{padding:12px 16px;border-radius:6px;margin:16px 0;border-left:4px solid var(--accent);background:#eff4ff}
+.warn{border-color:#b45309;background:#fff7ed}
+table{border-collapse:collapse;width:100%;font-size:15px;margin:14px 0;display:block;overflow-x:auto}
+th,td{border:1px solid var(--line);padding:8px 12px;text-align:left;vertical-align:top}
+th{background:var(--soft)}
+nav.toc{background:var(--soft);border:1px solid var(--line);border-radius:8px;padding:14px 22px;margin:22px 0}
+nav.toc ol{margin:6px 0 0;padding-left:20px}
+footer{border-top:1px solid var(--line);padding:24px 20px;text-align:center;color:var(--muted);font-size:14px}
+</style>
+</head>
+<body>
+<header><div class="bar">
+  <a href="https://vihaan30g.github.io/">&larr; All Projects</a>
+  <a href="https://github.com/Vihaan30g">GitHub</a>
+</div></header>
+
+<main>
+<p class="meta">NVIDIA Jetson &middot; Embedded Linux &middot; Beginner Guide &middot; Last updated: [MONTH YEAR]</p>
+<h1>Jetson Orin Nano: Complete Flashing and Setup Guide</h1>
+<p class="lead">How to install a fresh Jetson Linux (Ubuntu 22.04) onto an NVMe SSD on the Jetson Orin Nano Developer Kit using NVIDIA SDK Manager, with a video for every stage.</p>
+
+<nav class="toc"><strong>Contents</strong>
+<ol>
+<li><a href="#overview">Overview and objective</a></li>
+<li><a href="#hw">The hardware</a></li>
+<li><a href="#methods">Ways to flash a Jetson</a></li>
+<li><a href="#sdkm">SDK Manager and JetPack explained</a></li>
+<li><a href="#recovery">Force Recovery Mode</a></li>
+<li><a href="#host">Host PC setup and SDK Manager configuration</a></li>
+<li><a href="#flash">Flashing the NVMe</a></li>
+<li><a href="#boot">First boot</a></li>
+<li><a href="#verify">Verify the installation</a></li>
+<li><a href="#trouble">Troubleshooting</a></li>
+</ol></nav>
+
+<h2 id="overview">1. Overview and objective</h2>
+<p>The goal of this guide is to take a Jetson Orin Nano whose existing software is old, broken, or unknown, and replace it with a clean, fresh installation of Jetson Linux, an Ubuntu 22.04 based operating system, running from an NVMe SSD. We do not need the existing system to boot at all.</p>
+<p>A Jetson is not installed like a laptop. You cannot simply write a generic Ubuntu ISO to it. It needs NVIDIA's own software stack (boot firmware, kernel, drivers, and libraries), prepared and written to it from a separate computer called the <strong>host</strong>.</p>
+<h3>The process at a glance</h3>
+<ol>
+<li><strong>Prepare the host PC:</strong> install NVIDIA SDK Manager and its dependencies.</li>
+<li><strong>Configure SDK Manager:</strong> select the Orin Nano and the required JetPack version.</li>
+<li><strong>Download JetPack:</strong> fetch the Jetson OS and the NVIDIA components.</li>
+<li><strong>Flash the Jetson:</strong> erase the existing software and install the new OS.</li>
+<li><strong>First boot:</strong> connect a monitor and complete the Ubuntu initial setup.</li>
+</ol>
+<pre class="diagram">  INTERNET
+     |
+     v
+ +-----------------+
+ |  SDK Manager    |   (on the host PC)
+ +--------+--------+
+          | downloads JetPack
+          v
+ +-----------------+
+ | Jetson Linux    |
+ | + components    |
+ +--------+--------+
+          | USB-C
+          v
+ +--------------------------+
+ |  ORIN NANO (Recovery)    |
+ |   QSPI-NOR: boot firmware|
+ |   NVMe SSD: Jetson Linux |
+ +------------+-------------+
+              | reboot
+              v
+        Ubuntu Desktop</pre>
+<figure class="video"><div class="frame"><iframe src="https://www.youtube.com/embed/WmTHWiLwE2Q" title="Video 1: Overview" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+<figcaption>Video 1: Overview</figcaption></figure>
+<figure class="video"><div class="frame"><iframe src="https://www.youtube.com/embed/videoseries?list=PLcuu0BbE06o4" title="Full playlist" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+<figcaption>Full playlist: Jetson Orin Nano - Complete Flashing and Setup Guide (all 7 videos)</figcaption></figure>
+<div class="note"><strong>About the commands.</strong> The exact on-screen steps and commands are demonstrated in the videos. This page explains the concepts, the reasons behind each step, and what to expect, so you can follow the videos with confidence.</div>
+
+<h2 id="hw">2. The hardware</h2>
+<p>The board used in this guide has the following specifications:</p>
+<table>
+<tr><th>Component</th><th>Specification</th></tr>
+<tr><td>Memory</td><td>8 GB LPDDR5</td></tr>
+<tr><td>Memory bandwidth</td><td>68 GB/s</td></tr>
+<tr><td>CPU</td><td>6-core Arm Cortex CPU</td></tr>
+<tr><td>GPU</td><td>NVIDIA GPU with 1024 CUDA cores and 32 Tensor Cores</td></tr>
+<tr><td>Storage used here</td><td>NVMe SSD (already installed)</td></tr>
+<tr><td>Software target</td><td>JetPack [JETPACK_VERSION] (6.x), Ubuntu 22.04 based</td></tr>
+</table>
+<h3>What you need</h3>
+<ul>
+<li>A host PC running <strong>Ubuntu 20.04 or 22.04 (x86_64)</strong></li>
+<li>A reliable internet connection</li>
+<li>A free <strong>NVIDIA Developer account</strong></li>
+<li>A <strong>USB-C data cable</strong> (not a charge-only cable)</li>
+<li>Enough free disk space on the host. NVIDIA recommends at least 27 GB on the host plus 16 GB on the target for a full deployment, depending on the components you select</li>
+<li>A monitor, keyboard and mouse for the first boot</li>
+</ul>
+
+<h2 id="methods">3. Ways to flash a Jetson</h2>
+<table>
+<tr><th>Method</th><th>Description</th></tr>
+<tr><td><strong>SDK Manager (used here)</strong></td><td>NVIDIA's graphical host tool. It guides you through selecting the hardware, downloading software, and flashing. Recommended when flashing directly to an NVMe SSD.</td></tr>
+<tr><td>Command-line flashing</td><td>Using the Jetson Linux (BSP) package and its flash scripts manually. More control, more steps to learn.</td></tr>
+<tr><td>SD card image</td><td>Writing a prebuilt image to a microSD card. Convenient for microSD booting, but not what we want for NVMe.</td></tr>
+</table>
+<p>We follow the <strong>SDK Manager</strong> method because it is the most beginner-friendly, and it handles both downloading and flashing in one guided workflow.</p>
+
+<h2 id="sdkm">4. SDK Manager and JetPack explained</h2>
+<h3>Why SDK Manager?</h3>
+<p>Since the Orin Nano cannot be installed from a generic Ubuntu ISO, we need NVIDIA's Jetson Linux software stack and the tools to prepare and flash the board. SDK Manager is the host-side tool that provides this guided workflow.</p>
+<h3>SDK Manager vs. JetPack</h3>
+<p>SDK Manager itself is a small application. Once installed, it downloads the much larger <strong>JetPack</strong> release to the host. JetPack consists of Jetson Linux (the Ubuntu-based OS, kernel, bootloader and NVIDIA drivers) plus optional SDK components such as CUDA, cuDNN, TensorRT and VPI.</p>
+<pre class="diagram">          SDK Manager
+               |
+           Internet
+               |
+            JetPack
+        +------+------+
+        |             |
+  Jetson Linux   SDK components
+  OS, kernel,    CUDA, cuDNN,
+  bootloader,    TensorRT, VPI...
+  drivers</pre>
+<p>For a basic OS flash, the mandatory Jetson Linux (BSP) parts are what matter. Optional developer components are not all required, and the video shows which ones to select.</p>
+<figure class="video"><div class="frame"><iframe src="https://www.youtube.com/embed/gGmytrB7GIk" title="Video 2: SDK Manager" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+<figcaption>Video 2: SDK Manager</figcaption></figure>
+
+<h2 id="recovery">5. Force Recovery Mode</h2>
+<p>This is the most important concept in the whole process. In a normal boot the board goes through firmware, bootloader, Linux, and then Ubuntu. For flashing we deliberately skip that path:</p>
+<pre class="diagram"> Normal boot:
+ Power ON -> Firmware -> Bootloader -> Linux -> Ubuntu
+
+ Recovery boot:
+ Power ON -> Force Recovery Mode -> USB link to host</pre>
+<h3>Why recovery mode?</h3>
+<p>The existing OS may be completely broken. In Force Recovery Mode (RCM), the Jetson stops before loading anything from storage and waits for the host over USB. This gives the host low-level access, so it can flash the board regardless of what is installed. NVIDIA requires the developer kit to be in this mode for flashing from a host PC.</p>
+<h3>Putting the board into recovery mode</h3>
+<p>With the board powered off, a jumper wire is used to connect the <code>FC REC</code> and <code>GND</code> pins on the carrier board's button header. Connect the USB-C cable to the host, then apply power. Video 3 shows the exact pins and sequence. Check NVIDIA's Developer Kit User Guide if you are unsure about the pin location on your board revision.</p>
+<h3>Check that the host sees the board</h3>
+<div class="cb"><pre>lsusb</pre></div>
+<p>An NVIDIA device should appear in the list (usually shown as an APX device). SDK Manager also detects it on its own.</p>
+<figure class="video"><div class="frame"><iframe src="https://www.youtube.com/embed/ZQEHIOXFpfo" title="Video 3: Recovery mode" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+<figcaption>Video 3: Putting the Orin Nano into recovery mode</figcaption></figure>
+
+<h2 id="host">6. Host PC setup and SDK Manager configuration</h2>
+<h3>Preparing the host</h3>
+<p>On the Ubuntu host, install NVIDIA SDK Manager and its required dependencies, then sign in with your NVIDIA Developer account. Make sure you have enough free disk space for the download, since the JetPack files are large.</p>
+<h3>Configuring SDK Manager</h3>
+<p>With SDK Manager open, we tell it exactly what we are doing:</p>
+<table>
+<tr><th>Setting</th><th>Value</th></tr>
+<tr><td>Product category</td><td>Jetson</td></tr>
+<tr><td>Target hardware</td><td>Jetson Orin Nano</td></tr>
+<tr><td>JetPack version</td><td>JetPack 6.x ([JETPACK_VERSION])</td></tr>
+<tr><td>Target storage</td><td>NVMe</td></tr>
+</table>
+<p>In effect, we are saying: "this is the hardware I am flashing, this is the software generation I want, and this is where I want the OS installed." NVIDIA's documentation lists an NVMe SSD as a supported target and recommends SDK Manager for flashing directly to it.</p>
+<h3>Downloading JetPack</h3>
+<p>After you accept the licenses, SDK Manager downloads the selected JetPack release to the host. This is the large download of the process, so time depends on your connection. Keep the host awake and online until it finishes.</p>
+<figure class="video"><div class="frame"><iframe src="https://www.youtube.com/embed/hSk3JHx1MRk" title="Video 4: Setup host machine" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+<figcaption>Video 4: Setting up the host machine</figcaption></figure>
+
+<h2 id="flash">7. Flashing the NVMe</h2>
+<p>Now everything is ready: the software is on the host, the Jetson is in recovery mode, and the NVMe is the target.</p>
+<pre class="diagram"> HOST PC (Jetson Linux)
+       |
+       | USB
+       v
+   Orin Nano
+       |
+       v
+   NVMe SSD  -->  fresh Jetson Linux</pre>
+<p>The old installation on the target is replaced. Importantly, flashing is more than copying Ubuntu to the SSD. The Orin Nano stores its UEFI boot firmware in <strong>QSPI-NOR flash</strong>, separate from the NVMe, and that firmware must be compatible with the JetPack release you boot. The process therefore sets up the complete platform: the right boot firmware plus Jetson Linux on the target storage.</p>
+<div class="warn"><strong>Do not interrupt the flash.</strong> Keep the USB cable and power connected, and do not put the host to sleep until SDK Manager reports that the installation is complete. Flashing erases the existing contents of the target storage, so back up anything you need first.</div>
+<figure class="video"><div class="frame"><iframe src="https://www.youtube.com/embed/JOGCF_T8cj8" title="Video 5: Flashing" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+<figcaption>Video 5: Flashing the Orin Nano</figcaption></figure>
+
+<h2 id="boot">8. First boot</h2>
+<p>After flashing, the Jetson should no longer be in recovery mode: remove the recovery jumper and power-cycle the board. It now boots in the normal sequence from the NVMe:</p>
+<pre class="diagram"> Power ON -> Jetson firmware -> UEFI bootloader
+          -> NVMe -> Linux kernel
+          -> Ubuntu 22.04 based Jetson Linux
+          -> Ubuntu first-boot setup</pre>
+<p>Connect a monitor, keyboard and, if needed, a mouse, and complete the Ubuntu initial setup (language, keyboard layout, time zone, user account and password). Videos 6 and 7 show this in two parts.</p>
+<figure class="video"><div class="frame"><iframe src="https://www.youtube.com/embed/CCouG6G99TE" title="Video 6: First boot A" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+<figcaption>Video 6: First boot (Part A)</figcaption></figure>
+<figure class="video"><div class="frame"><iframe src="https://www.youtube.com/embed/0RpP4olF9lM" title="Video 7: First boot B" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+<figcaption>Video 7: First boot (Part B)</figcaption></figure>
+
+<h2 id="verify">9. Verify the installation</h2>
+<p>Reaching the desktop is a good sign, but it is better to confirm what is actually installed. Open a terminal on the Jetson and check the following.</p>
+<h3>Ubuntu version</h3>
+<div class="cb"><pre>lsb_release -a
+cat /etc/os-release</pre></div>
+<p>Confirm that the expected Ubuntu release (22.04) is shown.</p>
+<h3>Jetson Linux release</h3>
+<div class="cb"><pre>cat /etc/nv_tegra_release</pre></div>
+<p>This is NVIDIA's recommended way to check the installed Jetson Linux release. Compare it with the JetPack version you selected.</p>
+<h3>Storage</h3>
+<div class="cb"><pre>lsblk</pre></div>
+<p>The root filesystem (<code>/</code>) should be on an <code>nvme</code> device, which confirms the system runs from the NVMe SSD.</p>
+
+<h2 id="trouble">10. Troubleshooting</h2>
+<table>
+<tr><th>Problem</th><th>Likely cause and fix</th></tr>
+<tr><td>SDK Manager does not detect the board</td><td>The board is not in recovery mode, or the cable is charge-only. Use a data cable, connect directly to the host (no hub), and repeat the recovery procedure. Check with <code>lsusb</code>.</td></tr>
+<tr><td>Download fails or stops</td><td>Check the internet connection and free disk space, then retry from SDK Manager.</td></tr>
+<tr><td>Flashing fails part-way</td><td>Try a different USB port or cable, re-enter recovery mode, and run the flash again.</td></tr>
+<tr><td>No display on first boot</td><td>Check the monitor cable and input, then power-cycle. Confirm the recovery jumper has been removed.</td></tr>
+<tr><td>Boot problems after a JetPack change</td><td>The boot firmware in QSPI-NOR must be compatible with the JetPack release. Reflash using the matching release.</td></tr>
+</table>
+</main>
+<footer>Written by Vihaan Gupta &middot; <a href="https://github.com/Vihaan30g">GitHub</a> &middot; <a href="[YOUR_YOUTUBE_CHANNEL_URL]">YouTube</a> &middot; <a href="mailto:vihaan30g@gmail.com">vihaan30g@gmail.com</a></footer>
+
+<script>
+document.querySelectorAll('.cb').forEach(function(b){
+  var btn=document.createElement('button');btn.textContent='Copy';
+  btn.onclick=function(){
+    var t=b.querySelector('pre').innerText;
+    (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(function(){btn.textContent='Copied';setTimeout(function(){btn.textContent='Copy'},1500)}).catch(function(){btn.textContent='Press Ctrl+C'});
+  };
+  b.appendChild(btn);
+});
+</script>
+</body>
+</html>
