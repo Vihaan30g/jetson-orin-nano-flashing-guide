@@ -33,6 +33,7 @@ pre.diagram{background:var(--soft);color:var(--text);border:1px solid var(--line
 .video{margin:22px 0}
 .video .frame{position:relative;padding-top:56.25%;border-radius:8px;overflow:hidden;background:#000;border:1px solid var(--line)}
 .video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.video .local{display:none;margin:0 0 10px;padding:10px 14px;border-radius:6px;border-left:4px solid #b45309;background:#fff7ed;font-size:14px;line-height:1.5}
 .video figcaption{font-size:14px;color:var(--muted);margin-top:6px}
 .note,.warn{padding:12px 16px;border-radius:6px;margin:16px 0;border-left:4px solid var(--accent);background:#eff4ff}
 .warn{border-color:#b45309;background:#fff7ed}
@@ -102,9 +103,9 @@ footer{border-top:1px solid var(--line);padding:24px 20px;text-align:center;colo
               | reboot
               v
         Ubuntu Desktop</pre>
-<figure class="video"><div class="frame"><iframe src="https://www.youtube.com/embed/WmTHWiLwE2Q" title="Video 1: Overview" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+<figure class="video"><div class="frame"><iframe referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/WmTHWiLwE2Q?rel=0&playsinline=1" title="Video 1: Overview" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
 <figcaption>Video 1: Overview</figcaption></figure>
-<figure class="video"><div class="frame"><iframe src="https://www.youtube.com/embed/videoseries?list=PLcuu0BbE06o4" title="Full playlist" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+<figure class="video"><div class="frame"><iframe referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/videoseries?list=PLcuu0BbE06o4&rel=0&playsinline=1" title="Full playlist" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
 <figcaption>Full playlist: Jetson Orin Nano - Complete Flashing and Setup Guide (all 7 videos)</figcaption></figure>
 <div class="note"><strong>About the commands.</strong> The exact on-screen steps and commands are demonstrated in the videos. This page explains the concepts, the reasons behind each step, and what to expect, so you can follow the videos with confidence.</div>
 
@@ -155,7 +156,7 @@ footer{border-top:1px solid var(--line);padding:24px 20px;text-align:center;colo
   bootloader,    TensorRT, VPI...
   drivers</pre>
 <p>For a basic OS flash, the mandatory Jetson Linux (BSP) parts are what matter. Optional developer components are not all required, and the video shows which ones to select.</p>
-<figure class="video"><div class="frame"><iframe src="https://www.youtube.com/embed/gGmytrB7GIk" title="Video 2: SDK Manager" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+<figure class="video"><div class="frame"><iframe referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/gGmytrB7GIk?rel=0&playsinline=1" title="Video 2: SDK Manager" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
 <figcaption>Video 2: SDK Manager</figcaption></figure>
 
 <h2 id="recovery">5. Force Recovery Mode</h2>
@@ -172,7 +173,7 @@ footer{border-top:1px solid var(--line);padding:24px 20px;text-align:center;colo
 <h3>Check that the host sees the board</h3>
 <div class="cb"><pre>lsusb</pre></div>
 <p>An NVIDIA device should appear in the list (usually shown as an APX device). SDK Manager also detects it on its own.</p>
-<figure class="video"><div class="frame"><iframe src="https://www.youtube.com/embed/ZQEHIOXFpfo" title="Video 3: Recovery mode" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+<figure class="video"><div class="frame"><iframe referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/ZQEHIOXFpfo?rel=0&playsinline=1" title="Video 3: Recovery mode" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
 <figcaption>Video 3: Putting the Orin Nano into recovery mode</figcaption></figure>
 
 <h2 id="host">6. Host PC setup and SDK Manager configuration</h2>
@@ -190,7 +191,7 @@ footer{border-top:1px solid var(--line);padding:24px 20px;text-align:center;colo
 <p>In effect, we are saying: "this is the hardware I am flashing, this is the software generation I want, and this is where I want the OS installed." NVIDIA's documentation lists an NVMe SSD as a supported target and recommends SDK Manager for flashing directly to it.</p>
 <h3>Downloading JetPack</h3>
 <p>After you accept the licenses, SDK Manager downloads the selected JetPack release to the host. This is the large download of the process, so time depends on your connection. Keep the host awake and online until it finishes.</p>
-<figure class="video"><div class="frame"><iframe src="https://www.youtube.com/embed/hSk3JHx1MRk" title="Video 4: Setup host machine" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+<figure class="video"><div class="frame"><iframe referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/hSk3JHx1MRk?rel=0&playsinline=1" title="Video 4: Setup host machine" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
 <figcaption>Video 4: Setting up the host machine</figcaption></figure>
 
 <h2 id="flash">7. Flashing the NVMe</h2>
@@ -205,7 +206,7 @@ footer{border-top:1px solid var(--line);padding:24px 20px;text-align:center;colo
    NVMe SSD  -->  fresh Jetson Linux</pre>
 <p>The old installation on the target is replaced. Importantly, flashing is more than copying Ubuntu to the SSD. The Orin Nano stores its UEFI boot firmware in <strong>QSPI-NOR flash</strong>, separate from the NVMe, and that firmware must be compatible with the JetPack release you boot. The process therefore sets up the complete platform: the right boot firmware plus Jetson Linux on the target storage.</p>
 <div class="warn"><strong>Do not interrupt the flash.</strong> Keep the USB cable and power connected, and do not put the host to sleep until SDK Manager reports that the installation is complete. Flashing erases the existing contents of the target storage, so back up anything you need first.</div>
-<figure class="video"><div class="frame"><iframe src="https://www.youtube.com/embed/JOGCF_T8cj8" title="Video 5: Flashing" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+<figure class="video"><div class="frame"><iframe referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/JOGCF_T8cj8?rel=0&playsinline=1" title="Video 5: Flashing" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
 <figcaption>Video 5: Flashing the Orin Nano</figcaption></figure>
 
 <h2 id="boot">8. First boot</h2>
@@ -215,9 +216,9 @@ footer{border-top:1px solid var(--line);padding:24px 20px;text-align:center;colo
           -> Ubuntu 22.04 based Jetson Linux
           -> Ubuntu first-boot setup</pre>
 <p>Connect a monitor, keyboard and, if needed, a mouse, and complete the Ubuntu initial setup (language, keyboard layout, time zone, user account and password). Videos 6 and 7 show this in two parts.</p>
-<figure class="video"><div class="frame"><iframe src="https://www.youtube.com/embed/CCouG6G99TE" title="Video 6: First boot A" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+<figure class="video"><div class="frame"><iframe referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/CCouG6G99TE?rel=0&playsinline=1" title="Video 6: First boot A" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
 <figcaption>Video 6: First boot (Part A)</figcaption></figure>
-<figure class="video"><div class="frame"><iframe src="https://www.youtube.com/embed/0RpP4olF9lM" title="Video 7: First boot B" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+<figure class="video"><div class="frame"><iframe referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/0RpP4olF9lM?rel=0&playsinline=1" title="Video 7: First boot B" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
 <figcaption>Video 7: First boot (Part B)</figcaption></figure>
 
 <h2 id="verify">9. Verify the installation</h2>
@@ -254,6 +255,18 @@ document.querySelectorAll('.cb').forEach(function(b){
   };
   b.appendChild(btn);
 });
+// YouTube cannot play embedded videos on pages opened straight from disk (file://).
+// Show a hint in that case only; on GitHub Pages or any http(s) server it stays hidden.
+if (location.protocol === 'file:') {
+  var first = document.querySelector('.video');
+  if (first) {
+    var d = document.createElement('div');
+    d.className = 'local';
+    d.style.display = 'block';
+    d.innerHTML = '<strong>Videos will not play inline here.</strong> You opened this page as a local file, and YouTube only plays embedded videos on pages served over http(s). Publish the page (for example on GitHub Pages), or run <code>python3 -m http.server</code> in this folder and open <code>http://localhost:8000</code>.';
+    first.parentNode.insertBefore(d, first);
+  }
+}
 </script>
 </body>
 </html>
